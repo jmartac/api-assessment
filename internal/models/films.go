@@ -18,6 +18,7 @@ type FilmService interface {
 
 type FilmRepository interface {
 	FindAll() ([]Film, error)
+	FindByID(id uint) (*Film, error)
 }
 
 // NewFilmService creates and returns a new FilmService
@@ -37,6 +38,7 @@ type filmRepositoryImpl struct {
 	db *gorm.DB
 }
 
+// FindAll returns all films in the database
 func (repoImpl *filmRepositoryImpl) FindAll() ([]Film, error) {
 	var films []Film
 	err := repoImpl.db.Find(&films).Error
@@ -44,4 +46,14 @@ func (repoImpl *filmRepositoryImpl) FindAll() ([]Film, error) {
 		return nil, err
 	}
 	return films, nil
+}
+
+// FindByID returns the first film with the given ID
+func (repoImpl *filmRepositoryImpl) FindByID(id uint) (*Film, error) {
+	var film Film
+	err := repoImpl.db.First(&film, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &film, nil
 }

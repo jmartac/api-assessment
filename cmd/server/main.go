@@ -36,6 +36,7 @@ func main() {
 
 	// Routes
 	router.HandleFunc("/films", filmsController.FindAll).Methods("GET")
+	router.HandleFunc("/films/{id}", filmsController.FindByID).Methods("GET")
 
 	// TODO Bind routes to controllers
 
