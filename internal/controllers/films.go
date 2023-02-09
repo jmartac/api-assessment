@@ -26,7 +26,7 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Println(err)
 		err = json.NewEncoder(w).Encode(err)
-		if json.NewEncoder(w).Encode(err) != nil {
+		if err != nil {
 			log.Println(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
