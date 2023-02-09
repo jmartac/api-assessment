@@ -13,13 +13,15 @@ func NewServices() (*Services, error) {
 	}
 
 	return &Services{
-		db: db,
+		db:          db,
+		FilmService: models.NewFilmService(db),
 	}, nil
 }
 
 // Services contains all the services used by the application, including the database connection
 type Services struct {
-	db *gorm.DB
+	db          *gorm.DB
+	FilmService models.FilmService
 }
 
 // Close closes the database connection

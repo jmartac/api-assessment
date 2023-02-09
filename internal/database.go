@@ -18,7 +18,7 @@ const (
 
 // NewDatabase returns a new database connection
 func NewDatabase() (*gorm.DB, error) {
-	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, password, host, port, dbname)
+	mysqlInfo := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=True", user, password, host, port, dbname)
 	db, err := gorm.Open(mysql.Open(mysqlInfo), &gorm.Config{})
 	if err != nil {
 		return nil, err

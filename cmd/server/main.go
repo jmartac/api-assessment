@@ -2,6 +2,7 @@ package main
 
 import (
 	"api-assessment/internal"
+	"api-assessment/internal/controllers"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -30,7 +31,11 @@ func main() {
 
 	router := mux.NewRouter()
 
-	// TODO Controllers
+	// Controllers
+	filmsController := controllers.NewFilmsController(services.FilmService)
+
+	// Routes
+	router.HandleFunc("/films", filmsController.FindAll).Methods("GET")
 
 	// TODO Bind routes to controllers
 
