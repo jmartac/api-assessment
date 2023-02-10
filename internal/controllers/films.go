@@ -20,8 +20,12 @@ func NewFilmsController(fs models.FilmService) *FilmsController {
 
 // FindAll is used to find all films
 // GET /films
-func (fc *FilmsController) FindAll(w http.ResponseWriter, _ *http.Request) {
-	films, err := fc.fs.FindAll()
+func (fc *FilmsController) FindAll(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Query().Get("title")
+	genre := r.URL.Query().Get("genre")
+	releaseDate := r.URL.Query().Get("release_date")
+
+	films, err := fc.fs.FindAll(title, genre, releaseDate)
 	if err != nil {
 		log.Println(err)
 		err = json.NewEncoder(w).Encode(err)

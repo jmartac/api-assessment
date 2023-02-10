@@ -1,6 +1,9 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"strings"
+)
 
 type Film struct {
 	gorm.Model
@@ -17,7 +20,7 @@ type FilmService interface {
 }
 
 type FilmRepository interface {
-	FindAll() ([]Film, error)
+	FindAll(title, genre, releaseDate string) ([]Film, error)
 	FindByID(id uint) (*Film, error)
 	Create(film *Film) error
 }
@@ -40,9 +43,23 @@ type filmRepositoryImpl struct {
 }
 
 // FindAll returns all films in the database
-func (repoImpl *filmRepositoryImpl) FindAll() ([]Film, error) {
+func (repoImpl *filmRepositoryImpl) FindAll(title, genre, releaseDate string) ([]Film, error) {
+	q := repoImpl.db
+	if title != "" {
+		strings.ToLower(title)
+		q = q.Where("lower(title) LIKE ?", "%"+title+"%")
+	}
+	if genre != "" {
+		strings.ToLower(genre)
+		q = q.Where("lower(genre) LIKE ?", "%"+genre+"%")
+	}
+	if releaseDate != "" {
+		strings.ToLower(releaseDate)
+		q = q.Where("release_date LIKE ?", releaseDate)
+	}
+
 	var films []Film
-	err := repoImpl.db.Find(&films).Error
+	err := q.Find(&films).Error
 	if err != nil {
 		return nil, err
 	}
