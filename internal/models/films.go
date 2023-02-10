@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Film struct {
 	gorm.Model
-	Title       string `gorm:"not_null" json:"title"`
+	Title       string `gorm:"not_null;unique" json:"title"`
 	Director    string `gorm:"not_null" json:"director"`
 	ReleaseDate string `gorm:"not_null" json:"release_date"`
 	Genre       string `gorm:"not_null" json:"genre"`
