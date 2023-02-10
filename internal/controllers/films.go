@@ -21,9 +21,6 @@ func NewFilmsController(fs models.FilmService) *FilmsController {
 // FindAll is used to find all films
 // GET /films
 func (fc *FilmsController) FindAll(w http.ResponseWriter, _ *http.Request) {
-	log.Println("GET /films")
-	w.Header().Set("Content-Type", "application/json")
-
 	films, err := fc.fs.FindAll()
 	if err != nil {
 		log.Println(err)
@@ -45,9 +42,6 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, _ *http.Request) {
 // FindByID is used to find the details of a film by ID
 // GET /films/{id}
 func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
-	log.Println("GET /films/{id}")
-	w.Header().Set("Content-Type", "application/json")
-
 	id, err := fc.extractID(r)
 	if err != nil {
 		log.Println(err)
@@ -76,9 +70,6 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 // Create is used to create a new film and return the details
 // POST /films
 func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
-	log.Println("POST /films")
-	w.Header().Set("Content-Type", "application/json")
-
 	var film models.Film
 	err := json.NewDecoder(r.Body).Decode(&film)
 	if err != nil {

@@ -3,6 +3,7 @@ package main
 import (
 	"api-assessment/internal"
 	"api-assessment/internal/controllers"
+	"api-assessment/internal/middleware"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -30,6 +31,8 @@ func main() {
 	}
 
 	router := mux.NewRouter()
+	router.Use(middleware.LogAPICalls)
+	router.Use(middleware.JsonHeader)
 
 	// Controllers
 	filmsController := controllers.NewFilmsController(services.FilmService)
