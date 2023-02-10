@@ -19,6 +19,7 @@ type FilmService interface {
 type FilmRepository interface {
 	FindAll() ([]Film, error)
 	FindByID(id uint) (*Film, error)
+	Create(film *Film) error
 }
 
 // NewFilmService creates and returns a new FilmService
@@ -56,4 +57,13 @@ func (repoImpl *filmRepositoryImpl) FindByID(id uint) (*Film, error) {
 		return nil, err
 	}
 	return &film, nil
+}
+
+// Create will insert a given film in the DB
+func (repoImpl *filmRepositoryImpl) Create(film *Film) error {
+	err := repoImpl.db.Create(film).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

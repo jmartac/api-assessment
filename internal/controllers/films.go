@@ -73,6 +73,39 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Create is used to create a new film and return the details
+// POST /films
+func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
+	log.Println("POST /films")
+	w.Header().Set("Content-Type", "application/json")
+
+	var film models.Film
+	err := json.NewDecoder(r.Body).Decode(&film)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	err = fc.fs.Create(&film)
+	if err != nil {
+		log.Println(err)
+		err = json.NewEncoder(w).Encode(err)
+		if err != nil {
+			log.Println(err)
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(film)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
+// extractID will return the ID from the URL path
 func (fc *FilmsController) extractID(r *http.Request) (uint, error) {
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
 	if err != nil {
