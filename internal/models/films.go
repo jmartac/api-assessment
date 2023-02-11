@@ -24,6 +24,7 @@ type FilmRepository interface {
 	FindByID(id uint) (*Film, error)
 	Create(film *Film) error
 	Update(film *Film) error
+	Delete(id uint) error
 }
 
 // NewFilmService creates and returns a new FilmService
@@ -89,6 +90,16 @@ func (repoImpl *filmRepositoryImpl) Create(film *Film) error {
 // Update will update a given film in the DB, or create it if it doesn't exist
 func (repoImpl *filmRepositoryImpl) Update(film *Film) error {
 	err := repoImpl.db.Save(film).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Delete will delete the film with the given ID (
+func (repoImpl *filmRepositoryImpl) Delete(id uint) error {
+	film := &Film{Model: gorm.Model{ID: id}}
+	err := repoImpl.db.Delete(film).Error
 	if err != nil {
 		return err
 	}

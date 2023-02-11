@@ -102,6 +102,24 @@ func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
 	fc.writeResponse(w, film)
 }
 
+// Delete is used to delete the film with the given ID
+// POST /films/{id}/delete
+func (fc *FilmsController) Delete(w http.ResponseWriter, r *http.Request) {
+	id, err := fc.extractID(r)
+	if err != nil {
+		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = fc.fs.Delete(id)
+	if err != nil {
+		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	fc.writeResponse(w, "Film deleted")
+}
+
 // extractID will return the ID from the URL path
 func (fc *FilmsController) extractID(r *http.Request) (uint, error) {
 	id, err := strconv.Atoi(mux.Vars(r)["id"])

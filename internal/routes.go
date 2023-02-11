@@ -27,4 +27,5 @@ func initRoutes(router *mux.Router, services *Services) {
 	router.HandleFunc("/films/{id}", filmsController.FindByID).Methods("GET")
 	router.HandleFunc("/films", filmsController.Create).Methods("POST")
 	router.HandleFunc("/films/{id}/update", filmsController.Update).Methods("POST")
+	router.HandleFunc("/films/{id}/delete", filmsController.Delete).Methods("POST")
 }
