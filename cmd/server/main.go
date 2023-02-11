@@ -2,9 +2,6 @@ package main
 
 import (
 	"api-assessment/internal"
-	"api-assessment/internal/controllers"
-	"api-assessment/internal/middleware"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -30,17 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	router := mux.NewRouter()
-	router.Use(middleware.LogAPICalls)
-	router.Use(middleware.JsonHeader)
-
-	// Controllers
-	filmsController := controllers.NewFilmsController(services.FilmService)
-
-	// Routes
-	router.HandleFunc("/films", filmsController.FindAll).Methods("GET")
-	router.HandleFunc("/films/{id}", filmsController.FindByID).Methods("GET")
-	router.HandleFunc("/film", filmsController.Create).Methods("POST")
+	router := internal.NewRouter(services)
 
 	log.Println("Starting server...")
 	_ = http.ListenAndServe(":3000", router) // TODO use an environment variable
