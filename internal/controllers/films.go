@@ -39,8 +39,7 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, r *http.Request) {
 func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 	id, err := fc.extractID(r)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
@@ -54,13 +53,12 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create is used to create a new film and return the details
-// POST /films
+// POST /film
 func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 	var film models.Film
 	err := json.NewDecoder(r.Body).Decode(&film)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
