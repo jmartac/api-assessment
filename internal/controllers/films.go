@@ -71,6 +71,37 @@ func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 	fc.writeResponse(w, film)
 }
 
+// Update is used to update a given film and return the updated details
+// POST /films/{id}/update
+func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
+	id, err := fc.extractID(r)
+	if err != nil {
+		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	film, err := fc.fs.FindByID(id)
+	if err != nil {
+		fc.handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	// Decode new data into retrieved film
+	err = json.NewDecoder(r.Body).Decode(&film)
+	if err != nil {
+		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	err = fc.fs.Update(film)
+	if err != nil {
+		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	fc.writeResponse(w, film)
+}
+
 // extractID will return the ID from the URL path
 func (fc *FilmsController) extractID(r *http.Request) (uint, error) {
 	id, err := strconv.Atoi(mux.Vars(r)["id"])

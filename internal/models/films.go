@@ -23,6 +23,7 @@ type FilmRepository interface {
 	FindAll(title, genre, releaseDate string) ([]Film, error)
 	FindByID(id uint) (*Film, error)
 	Create(film *Film) error
+	Update(film *Film) error
 }
 
 // NewFilmService creates and returns a new FilmService
@@ -79,6 +80,15 @@ func (repoImpl *filmRepositoryImpl) FindByID(id uint) (*Film, error) {
 // Create will insert a given film in the DB
 func (repoImpl *filmRepositoryImpl) Create(film *Film) error {
 	err := repoImpl.db.Create(film).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Update will update a given film in the DB, or create it if it doesn't exist
+func (repoImpl *filmRepositoryImpl) Update(film *Film) error {
+	err := repoImpl.db.Save(film).Error
 	if err != nil {
 		return err
 	}
