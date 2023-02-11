@@ -53,7 +53,7 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create is used to create a new film and return the details
-// POST /film
+// POST /films
 func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 	var film models.Film
 	err := json.NewDecoder(r.Body).Decode(&film)
