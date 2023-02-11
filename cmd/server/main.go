@@ -22,6 +22,7 @@ func main() {
 	}(services)
 
 	// Migrate database on startup
+	log.Println("Migrating database...")
 	err = services.AutoMigrate()
 	if err != nil {
 		panic(err)

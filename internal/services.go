@@ -15,6 +15,7 @@ func NewServices() (*Services, error) {
 	return &Services{
 		db:          db,
 		FilmService: models.NewFilmService(db),
+		UserService: models.NewUserService(db),
 	}, nil
 }
 
@@ -22,6 +23,7 @@ func NewServices() (*Services, error) {
 type Services struct {
 	db          *gorm.DB
 	FilmService models.FilmService
+	UserService models.UserService
 }
 
 // Close closes the database connection
@@ -35,7 +37,7 @@ func (s *Services) Close() error {
 
 // DestructiveReset drops models tables and rebuilds them
 func (s *Services) DestructiveReset() error {
-	err := s.db.Migrator().DropTable(&models.Film{})
+	err := s.db.Migrator().DropTable(&models.Film{}, &models.User{})
 	if err != nil {
 		return err
 	}
@@ -44,5 +46,5 @@ func (s *Services) DestructiveReset() error {
 
 // AutoMigrate will attempt to migrate all models tables
 func (s *Services) AutoMigrate() error {
-	return s.db.Migrator().AutoMigrate(&models.Film{})
+	return s.db.Migrator().AutoMigrate(&models.Film{}, &models.User{})
 }
