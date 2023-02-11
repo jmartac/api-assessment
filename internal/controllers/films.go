@@ -27,20 +27,11 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, r *http.Request) {
 
 	films, err := fc.fs.FindAll(title, genre, releaseDate)
 	if err != nil {
-		log.Println(err)
-		err = json.NewEncoder(w).Encode(err)
-		if err != nil {
-			log.Println(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
+		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(films)
-	if err != nil {
-		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
+	fc.writeResponse(w, films)
 }
 
 // FindByID is used to find the details of a film by ID
@@ -55,20 +46,11 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 
 	film, err := fc.fs.FindByID(id)
 	if err != nil {
-		log.Println(err)
-		err = json.NewEncoder(w).Encode(err)
-		if err != nil {
-			log.Println(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
+		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(film)
-	if err != nil {
-		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
+	fc.writeResponse(w, film)
 }
 
 // Create is used to create a new film and return the details
@@ -84,20 +66,11 @@ func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 
 	err = fc.fs.Create(&film)
 	if err != nil {
-		log.Println(err)
-		err = json.NewEncoder(w).Encode(err)
-		if err != nil {
-			log.Println(err)
-			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		}
+		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(film)
-	if err != nil {
-		log.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
+	fc.writeResponse(w, film)
 }
 
 // extractID will return the ID from the URL path
@@ -107,4 +80,18 @@ func (fc *FilmsController) extractID(r *http.Request) (uint, error) {
 		return 0, err
 	}
 	return uint(id), nil
+}
+
+// writeResponse will try to write the given response to the client
+func (fc *FilmsController) writeResponse(w http.ResponseWriter, response interface{}) {
+	err := json.NewEncoder(w).Encode(response)
+	if err != nil {
+		fc.handleError(w, err, http.StatusInternalServerError)
+	}
+}
+
+// handleError will log the error and write the given status code to the client
+func (fc *FilmsController) handleError(w http.ResponseWriter, err error, statusCode int) {
+	log.Println(err)
+	http.Error(w, http.StatusText(statusCode), statusCode)
 }

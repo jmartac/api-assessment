@@ -42,8 +42,6 @@ func main() {
 	router.HandleFunc("/films/{id}", filmsController.FindByID).Methods("GET")
 	router.HandleFunc("/film", filmsController.Create).Methods("POST")
 
-	// TODO Bind routes to controllers
-
 	log.Println("Starting server...")
 	_ = http.ListenAndServe(":3000", router) // TODO use an environment variable
 }
