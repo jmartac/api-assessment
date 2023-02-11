@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"api-assessment/internal/models"
+	"api-assessment/internal/services"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
@@ -10,11 +11,11 @@ import (
 )
 
 type FilmsController struct {
-	fs models.FilmService
+	fs services.FilmService
 }
 
 // NewFilmsController is used to create a new Films controller.
-func NewFilmsController(fs models.FilmService) *FilmsController {
+func NewFilmsController(fs services.FilmService) *FilmsController {
 	return &FilmsController{fs: fs}
 }
 

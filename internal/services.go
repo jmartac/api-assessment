@@ -2,6 +2,7 @@ package internal
 
 import (
 	"api-assessment/internal/models"
+	"api-assessment/internal/services"
 	"gorm.io/gorm"
 )
 
@@ -14,16 +15,16 @@ func NewServices() (*Services, error) {
 
 	return &Services{
 		db:          db,
-		FilmService: models.NewFilmService(db),
-		UserService: models.NewUserService(db),
+		FilmService: services.NewFilmService(db),
+		UserService: services.NewUserService(db),
 	}, nil
 }
 
 // Services contains all the services used by the application, including the database connection
 type Services struct {
 	db          *gorm.DB
-	FilmService models.FilmService
-	UserService models.UserService
+	FilmService services.FilmService
+	UserService services.UserService
 }
 
 // Close closes the database connection

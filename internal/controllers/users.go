@@ -3,6 +3,7 @@ package controllers
 import (
 	"api-assessment/internal/models"
 	"api-assessment/internal/security"
+	"api-assessment/internal/services"
 	"encoding/json"
 	"errors"
 	"log"
@@ -10,11 +11,11 @@ import (
 )
 
 type UsersController struct {
-	us models.UserService
+	us services.UserService
 }
 
 // NewUsersController is used to create a new Users controller.
-func NewUsersController(us models.UserService) *UsersController {
+func NewUsersController(us services.UserService) *UsersController {
 	return &UsersController{us: us}
 }
 
