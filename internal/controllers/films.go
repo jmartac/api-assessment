@@ -32,12 +32,7 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filmsResponse := make([]models.FilmResponse, len(films))
-	for i, film := range films {
-		filmsResponse[i] = film.ToResponse()
-	}
-
-	fc.writeResponse(w, filmsResponse)
+	fc.writeResponse(w, models.Films(films).ToResponse())
 }
 
 // FindByID is used to find the details of a film by ID

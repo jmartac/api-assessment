@@ -9,6 +9,7 @@ type User struct {
 	Username     string `gorm:"not_null;unique"`
 	Password     string `gorm:"-"`
 	PasswordHash string `gorm:"not_null"`
+	Films        []Film
 }
 
 // ToResponse converts a User model into a UserResponse
@@ -16,6 +17,7 @@ func (u *User) ToResponse() UserResponse {
 	return UserResponse{
 		ID:       u.ID,
 		Username: u.Username,
+		Films:    Films(u.Films).ToResponse(),
 	}
 }
 
@@ -25,6 +27,7 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-	ID       uint   `json:"id"`
-	Username string `json:"username"`
+	ID       uint           `json:"id"`
+	Username string         `json:"username"`
+	Films    []FilmResponse `json:"films"`
 }

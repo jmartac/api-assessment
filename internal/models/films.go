@@ -11,6 +11,7 @@ type Film struct {
 	ReleaseDate string `gorm:"not_null"`
 	Genre       string `gorm:"not_null"`
 	Synopsis    string `gorm:"not_null"`
+	UserID      uint   `gorm:"not_null"`
 	// TODO Cast
 }
 
@@ -42,7 +43,19 @@ func (f *Film) ToResponse() FilmResponse {
 		ReleaseDate: f.ReleaseDate,
 		Genre:       f.Genre,
 		Synopsis:    f.Synopsis,
+		UserID:      f.UserID,
 	}
+}
+
+type Films []Film
+
+// ToResponse converts a slice of Film into a slice of FilmResponse
+func (f Films) ToResponse() []FilmResponse {
+	var films []FilmResponse
+	for _, film := range f {
+		films = append(films, film.ToResponse())
+	}
+	return films
 }
 
 type FilmRequest struct {
@@ -60,4 +73,5 @@ type FilmResponse struct {
 	ReleaseDate string `json:"release_date"`
 	Genre       string `json:"genre"`
 	Synopsis    string `json:"synopsis"`
+	UserID      uint   `json:"user_id"`
 }
