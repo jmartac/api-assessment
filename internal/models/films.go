@@ -6,10 +6,58 @@ import (
 
 type Film struct {
 	gorm.Model
-	Title       string `gorm:"not_null;unique" json:"title"`
-	Director    string `gorm:"not_null" json:"director"`
-	ReleaseDate string `gorm:"not_null" json:"release_date"`
-	Genre       string `gorm:"not_null" json:"genre"`
-	Synopsis    string `gorm:"not_null" json:"synopsis"`
+	Title       string `gorm:"not_null;unique"`
+	Director    string `gorm:"not_null"`
+	ReleaseDate string `gorm:"not_null"`
+	Genre       string `gorm:"not_null"`
+	Synopsis    string `gorm:"not_null"`
 	// TODO Cast
+}
+
+// MergeData merges non-empty fields from the given data into the film
+func (f *Film) MergeData(data *FilmRequest) {
+	if data.Title != "" {
+		f.Title = data.Title
+	}
+	if data.Director != "" {
+		f.Director = data.Director
+	}
+	if data.ReleaseDate != "" {
+		f.ReleaseDate = data.ReleaseDate
+	}
+	if data.Genre != "" {
+		f.Genre = data.Genre
+	}
+	if data.Synopsis != "" {
+		f.Synopsis = data.Synopsis
+	}
+}
+
+// ToResponse converts a Film model into a FilmResponse
+func (f *Film) ToResponse() FilmResponse {
+	return FilmResponse{
+		ID:          f.ID,
+		Title:       f.Title,
+		Director:    f.Director,
+		ReleaseDate: f.ReleaseDate,
+		Genre:       f.Genre,
+		Synopsis:    f.Synopsis,
+	}
+}
+
+type FilmRequest struct {
+	Title       string `json:"title"`
+	Director    string `json:"director"`
+	ReleaseDate string `json:"release_date"`
+	Genre       string `json:"genre"`
+	Synopsis    string `json:"synopsis"`
+}
+
+type FilmResponse struct {
+	ID          uint   `json:"id"`
+	Title       string `json:"title"`
+	Director    string `json:"director"`
+	ReleaseDate string `json:"release_date"`
+	Genre       string `json:"genre"`
+	Synopsis    string `json:"synopsis"`
 }

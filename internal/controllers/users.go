@@ -30,12 +30,12 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// check if the user already exists
-	ok, err := uc.us.UsernameExists(user.Username)
+	exists, err := uc.us.UsernameExists(user.Username)
 	if err != nil {
 		uc.handleError(w, err, http.StatusInternalServerError)
 		return
 	}
-	if ok {
+	if exists {
 		uc.handleError(w, errors.New("user tried to register with an already exising username"), http.StatusBadRequest)
 		return
 	}
@@ -56,7 +56,7 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 
 	// TODO should return a JWT
 
-	uc.writeResponse(w, user)
+	uc.writeResponse(w, user.ToResponse())
 }
 
 // writeResponse will try to write the given response to the client

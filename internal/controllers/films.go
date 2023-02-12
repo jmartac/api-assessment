@@ -32,7 +32,12 @@ func (fc *FilmsController) FindAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fc.writeResponse(w, films)
+	filmsResponse := make([]models.FilmResponse, len(films))
+	for i, film := range films {
+		filmsResponse[i] = film.ToResponse()
+	}
+
+	fc.writeResponse(w, filmsResponse)
 }
 
 // FindByID is used to find the details of a film by ID
@@ -50,26 +55,33 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fc.writeResponse(w, film)
+	fc.writeResponse(w, film.ToResponse())
 }
 
 // Create is used to create a new film and return the details
 // POST /films
 func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
-	var film models.Film
-	err := json.NewDecoder(r.Body).Decode(&film)
+	var request models.FilmRequest
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
+	film := models.Film{
+		Title:       request.Title,
+		Director:    request.Director,
+		ReleaseDate: request.ReleaseDate,
+		Genre:       request.Genre,
+		Synopsis:    request.Synopsis,
+	}
 	err = fc.fs.Create(&film)
 	if err != nil {
 		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	fc.writeResponse(w, film)
+	fc.writeResponse(w, film.ToResponse())
 }
 
 // Update is used to update a given film and return the updated details
@@ -81,18 +93,23 @@ func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Retrieve film from database
 	film, err := fc.fs.FindByID(id)
 	if err != nil {
 		fc.handleError(w, err, http.StatusNotFound)
 		return
 	}
 
-	// Decode new data into retrieved film
-	err = json.NewDecoder(r.Body).Decode(&film)
+	// Decode new data
+	var request models.FilmRequest
+	err = json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		fc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
+
+	// merge new data with existing film data
+	film.MergeData(&request)
 
 	err = fc.fs.Update(film)
 	if err != nil {
@@ -100,7 +117,7 @@ func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fc.writeResponse(w, film)
+	fc.writeResponse(w, film.ToResponse())
 }
 
 // Delete is used to delete the film with the given ID
