@@ -29,5 +29,5 @@ type UserRequest struct {
 type UserResponse struct {
 	ID       uint           `json:"id"`
 	Username string         `json:"username"`
-	Films    []FilmResponse `json:"films"`
+	Films    []FilmResponse `json:"films,omitempty"`
 }

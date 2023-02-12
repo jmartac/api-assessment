@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api-assessment/internal/auth"
 	"api-assessment/internal/models"
 	"api-assessment/internal/security"
 	"api-assessment/internal/services"
@@ -54,13 +55,26 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO should return a JWT
+	// generate a JWT token
+	tokenInfo, err := auth.GenerateToken(user.ID, user.Username)
+	if err != nil {
+		uc.handleError(w, err, http.StatusInternalServerError)
+		return
+	}
 
-	uc.writeResponse(w, user.ToResponse())
+	uc.writeResponse(w, tokenInfo, user.ToResponse())
 }
 
 // writeResponse will try to write the given response to the client
-func (uc *UsersController) writeResponse(w http.ResponseWriter, response interface{}) {
+func (uc *UsersController) writeResponse(w http.ResponseWriter, tokenInfo auth.TokenInfo, data interface{}) {
+	response := struct {
+		auth.TokenInfo
+		Data interface{} `json:"data"`
+	}{
+		TokenInfo: tokenInfo,
+		Data:      data,
+	}
+
 	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		uc.handleError(w, err, http.StatusInternalServerError)

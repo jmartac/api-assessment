@@ -24,11 +24,11 @@ func initRoutes(router *mux.Router, services *Services) {
 	usersController := controllers.NewUsersController(services.UserService)
 
 	// Films
-	router.HandleFunc("/films", filmsController.FindAll).Methods("GET")
-	router.HandleFunc("/films/{id}", filmsController.FindByID).Methods("GET")
-	router.HandleFunc("/films", filmsController.Create).Methods("POST")
-	router.HandleFunc("/films/{id}/update", filmsController.Update).Methods("POST")
-	router.HandleFunc("/films/{id}/delete", filmsController.Delete).Methods("POST")
+	router.HandleFunc("/films", middleware.Authenticate(filmsController.FindAll)).Methods("GET")
+	router.HandleFunc("/films/{id}", middleware.Authenticate(filmsController.FindByID)).Methods("GET")
+	router.HandleFunc("/films", middleware.Authenticate(filmsController.Create)).Methods("POST")
+	router.HandleFunc("/films/{id}/update", middleware.Authenticate(filmsController.Update)).Methods("POST")
+	router.HandleFunc("/films/{id}/delete", middleware.Authenticate(filmsController.Delete)).Methods("POST")
 
 	// Users
 	router.HandleFunc("/register", usersController.Create).Methods("POST")

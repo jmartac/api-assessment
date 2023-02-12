@@ -143,8 +143,8 @@ func (fc *FilmsController) extractID(r *http.Request) (uint, error) {
 }
 
 // writeResponse will try to write the given response to the client
-func (fc *FilmsController) writeResponse(w http.ResponseWriter, response interface{}) {
-	err := json.NewEncoder(w).Encode(response)
+func (fc *FilmsController) writeResponse(w http.ResponseWriter, data interface{}) {
+	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
 		fc.handleError(w, err, http.StatusInternalServerError)
 	}
