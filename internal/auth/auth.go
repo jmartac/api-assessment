@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -49,15 +50,30 @@ func GenerateToken(userId uint, username string) (TokenInfo, error) {
 }
 
 // ValidateToken validates the given token and returns the claims if the token is valid
-func ValidateToken(tokenString string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenString, keyFunc)
+func ValidateToken(tokenString string) (*JWTClaim, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JWTClaim{}, keyFunc)
 	if err != nil {
 		return nil, err
 	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims, nil
+	if !token.Valid {
+		return nil, errors.New("invalid token")
 	}
-	return nil, errors.New("invalid token")
+	return token.Claims.(*JWTClaim), nil
+}
+
+// GetUserIDFromRequest returns the ID of the user from the request context
+func GetUserIDFromRequest(r *http.Request) (uint, error) {
+	ctxValue := r.Context().Value(JWTClaimsKey)
+	jwtClaim, ok := ctxValue.(*JWTClaim)
+	if !ok {
+		return 0, errors.New("no claims found in request context")
+	}
+
+	id, err := strconv.ParseUint(jwtClaim.Subject, 10, 32)
+	if err != nil {
+		return 0, err
+	}
+	return uint(id), nil
 }
 
 // keyFunc checks the signing method and returns the secret key

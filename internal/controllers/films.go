@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"api-assessment/internal/auth"
 	"api-assessment/internal/models"
 	"api-assessment/internal/services"
 	"encoding/json"
@@ -63,12 +64,19 @@ func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userID, err := auth.GetUserIDFromRequest(r)
+	if err != nil {
+		fc.handleError(w, err, http.StatusUnauthorized)
+		return
+	}
+
 	film := models.Film{
 		Title:       request.Title,
 		Director:    request.Director,
 		ReleaseDate: request.ReleaseDate,
 		Genre:       request.Genre,
 		Synopsis:    request.Synopsis,
+		UserID:      userID,
 	}
 	err = fc.fs.Create(&film)
 	if err != nil {
@@ -92,6 +100,13 @@ func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
 	film, err := fc.fs.FindByID(id)
 	if err != nil {
 		fc.handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	// check if user is authorized to update film
+	userID, err := auth.GetUserIDFromRequest(r)
+	if err != nil || userID != film.UserID {
+		fc.handleError(w, err, http.StatusUnauthorized)
 		return
 	}
 
@@ -121,6 +136,20 @@ func (fc *FilmsController) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := fc.extractID(r)
 	if err != nil {
 		fc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// retrieve film from database
+	film, err := fc.fs.FindByID(id)
+	if err != nil {
+		fc.handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	// check if user is authorized to delete film
+	userID, err := auth.GetUserIDFromRequest(r)
+	if err != nil || userID != film.UserID {
+		fc.handleError(w, err, http.StatusUnauthorized)
 		return
 	}
 

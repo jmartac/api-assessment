@@ -36,14 +36,14 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 
 		// check if token is valid
-		jwtClaims, err := auth.ValidateToken(token)
+		jwtClaim, err := auth.ValidateToken(token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
 		// add the claims to the context, so that other handlers can access them later
-		ctxWithClaims := context.WithValue(r.Context(), auth.JWTClaimsKey, jwtClaims)
+		ctxWithClaims := context.WithValue(r.Context(), auth.JWTClaimsKey, jwtClaim)
 		r = r.WithContext(ctxWithClaims)
 
 		handlerFunc.ServeHTTP(w, r)
