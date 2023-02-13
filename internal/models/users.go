@@ -7,7 +7,6 @@ import (
 type User struct {
 	gorm.Model
 	Username     string `gorm:"not_null;unique"`
-	Password     string `gorm:"-"`
 	PasswordHash string `gorm:"not_null"`
 	Films        []Film
 }

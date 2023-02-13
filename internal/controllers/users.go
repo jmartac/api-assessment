@@ -23,35 +23,39 @@ func NewUsersController(us services.UserService) *UsersController {
 // Create is used to create a new user
 // POST /register
 func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	err := json.NewDecoder(r.Body).Decode(&user)
+	var userRequest models.UserRequest
+	err := json.NewDecoder(r.Body).Decode(&userRequest)
 	if err != nil {
 		uc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
 	// check if the user already exists
-	exists, err := uc.us.UsernameExists(user.Username)
+	exists, err := uc.us.UsernameExists(userRequest.Username)
 	if err != nil {
 		uc.handleError(w, err, http.StatusInternalServerError)
 		return
 	}
 	if exists {
-		uc.handleError(w, errors.New("user tried to register with an already exising username"), http.StatusBadRequest)
+		uc.handleError(w, errors.New("a user tried to register with an already exising username"), http.StatusBadRequest)
 		return
 	}
 
 	// generate a password hash and flush the password
-	user.PasswordHash, err = security.GeneratePasswordHash(user.Password)
-	user.Password = ""
+	passwordHash, err := security.GeneratePasswordHash(userRequest.Password)
+	userRequest.Password = "" // just in case
 	if err != nil {
 		uc.handleError(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	err = uc.us.Create(&user)
+	user := &models.User{
+		Username:     userRequest.Username,
+		PasswordHash: passwordHash,
+	}
+	err = uc.us.Create(user)
 	if err != nil {
-		uc.handleError(w, err, http.StatusBadRequest)
+		uc.handleError(w, err, http.StatusNotFound)
 		return
 	}
 
