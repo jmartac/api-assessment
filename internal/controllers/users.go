@@ -33,7 +33,7 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 	// check if the user already exists
 	exists, err := uc.us.UsernameExists(userRequest.Username)
 	if err != nil {
-		uc.handleError(w, err, http.StatusInternalServerError)
+		uc.handleError(w, err, http.StatusBadRequest)
 		return
 	}
 	if exists {
@@ -55,7 +55,7 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	err = uc.us.Create(user)
 	if err != nil {
-		uc.handleError(w, err, http.StatusNotFound)
+		uc.handleError(w, err, http.StatusInternalServerError)
 		return
 	}
 
