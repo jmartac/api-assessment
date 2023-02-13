@@ -69,6 +69,40 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 	uc.writeResponse(w, tokenInfo, user.ToResponse())
 }
 
+// Login is used to log in a user
+// POST /login
+func (uc *UsersController) Login(w http.ResponseWriter, r *http.Request) {
+	var userRequest models.UserRequest
+	err := json.NewDecoder(r.Body).Decode(&userRequest)
+	if err != nil {
+		uc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// check if the user already exists
+	user, err := uc.us.FindByUsername(userRequest.Username)
+	if err != nil {
+		uc.handleError(w, err, http.StatusNotFound)
+		return
+	}
+
+	// check password
+	err = security.PasswordMatches(userRequest.Password, user.PasswordHash)
+	if err != nil {
+		uc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// generate a JWT token
+	tokenInfo, err := auth.GenerateToken(user.ID, user.Username)
+	if err != nil {
+		uc.handleError(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	uc.writeResponse(w, tokenInfo, user.ToResponse())
+}
+
 // writeResponse will try to write the given response to the client
 func (uc *UsersController) writeResponse(w http.ResponseWriter, tokenInfo auth.TokenInfo, data interface{}) {
 	response := struct {

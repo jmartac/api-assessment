@@ -32,4 +32,5 @@ func initRoutes(router *mux.Router, services *Services) {
 
 	// Users
 	router.HandleFunc("/register", usersController.Create).Methods("POST")
+	router.HandleFunc("/login", usersController.Login).Methods("POST")
 }
