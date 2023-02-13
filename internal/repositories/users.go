@@ -26,7 +26,7 @@ type userRepositoryImpl struct {
 // FindByUsername returns the first user with the given ID
 func (repoImpl *userRepositoryImpl) FindByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := repoImpl.db.Where("username = ?", username).First(&user).Error
+	err := repoImpl.db.Preload("Films").Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
