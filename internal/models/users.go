@@ -6,8 +6,8 @@ import (
 
 type User struct {
 	gorm.Model
-	Username     string `gorm:"not_null;unique"`
-	PasswordHash string `gorm:"not_null"`
+	Username     string `gorm:"not_null;unique;size:30"`
+	PasswordHash string `gorm:"not_null;size:128"`
 	Films        []Film
 }
 
@@ -21,8 +21,8 @@ func (u *User) ToResponse() UserResponse {
 }
 
 type UserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"username"`
+	Password string `json:"password" validate:"password"`
 }
 
 type UserResponse struct {

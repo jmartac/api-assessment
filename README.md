@@ -10,3 +10,5 @@ This is a simple API that allows you to manage films.
   - Second, because it is the one I am most familiar with.
 - I will use GORM for the database management, because it is the one I am most familiar with.
 - I will use the `github.com/golang-jwt/jwt/v4` package for the JWT authentication, as it seems to be the most used one.
+- I will use the `github.com/go-playground/validator` package for validations, as it seems to be widely used in the
+  community.

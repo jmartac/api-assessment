@@ -5,6 +5,7 @@ import (
 	"api-assessment/internal/models"
 	"api-assessment/internal/security"
 	"api-assessment/internal/services"
+	"api-assessment/internal/validators"
 	"encoding/json"
 	"errors"
 	"log"
@@ -12,12 +13,16 @@ import (
 )
 
 type UsersController struct {
-	us services.UserService
+	us        services.UserService
+	validator *validators.Validator
 }
 
 // NewUsersController is used to create a new Users controller.
 func NewUsersController(us services.UserService) *UsersController {
-	return &UsersController{us: us}
+	return &UsersController{
+		us:        us,
+		validator: validators.NewValidator(),
+	}
 }
 
 // Create is used to create a new user
@@ -25,6 +30,13 @@ func NewUsersController(us services.UserService) *UsersController {
 func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 	var userRequest models.UserRequest
 	err := json.NewDecoder(r.Body).Decode(&userRequest)
+	if err != nil {
+		uc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// validate the user request
+	err = uc.validator.Validate(userRequest)
 	if err != nil {
 		uc.handleError(w, err, http.StatusBadRequest)
 		return
@@ -74,6 +86,13 @@ func (uc *UsersController) Create(w http.ResponseWriter, r *http.Request) {
 func (uc *UsersController) Login(w http.ResponseWriter, r *http.Request) {
 	var userRequest models.UserRequest
 	err := json.NewDecoder(r.Body).Decode(&userRequest)
+	if err != nil {
+		uc.handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	// validate the user request
+	err = uc.validator.Validate(userRequest)
 	if err != nil {
 		uc.handleError(w, err, http.StatusBadRequest)
 		return
