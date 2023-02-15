@@ -3,7 +3,6 @@ package repositories
 import (
 	"api-assessment/internal/models"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type FilmRepository interface {
@@ -29,15 +28,12 @@ type filmRepositoryImpl struct {
 func (repoImpl *filmRepositoryImpl) FindAll(title, genre, releaseDate string) ([]models.Film, error) {
 	q := repoImpl.db
 	if title != "" {
-		strings.ToLower(title)
-		q = q.Where("lower(title) LIKE ?", "%"+title+"%")
+		q = q.Where("title LIKE ?", "%"+title+"%")
 	}
 	if genre != "" {
-		strings.ToLower(genre)
-		q = q.Where("lower(genre) LIKE ?", "%"+genre+"%")
+		q = q.Where("genre LIKE ?", "%"+genre+"%")
 	}
 	if releaseDate != "" {
-		strings.ToLower(releaseDate)
 		q = q.Where("release_date LIKE ?", releaseDate)
 	}
 

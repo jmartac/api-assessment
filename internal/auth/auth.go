@@ -9,10 +9,14 @@ import (
 	"time"
 )
 
-const JWTClaimsKey = "jwtClaims"
-const expirationTime = 30 * time.Minute
+const (
+	JWTClaimsKey   = claimsKey(iota)
+	expirationTime = 30 * time.Minute
+)
 
 var jwtSecret []byte
+
+type claimsKey int
 
 func init() {
 	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
