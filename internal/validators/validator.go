@@ -26,6 +26,7 @@ func NewValidator() *Validator {
 }
 
 // Validate is used to validate a struct
+// If the struct has no validation tags, it will always return nil
 func (v *Validator) Validate(i interface{}) error {
 	return v.validator.Struct(i)
 }

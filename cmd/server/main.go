@@ -2,11 +2,23 @@ package main
 
 import (
 	"api-assessment/internal"
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 )
 
+const (
+	portDefault = 3000
+)
+
 func main() {
+	var port int
+
+	// Parse command line port flag
+	flag.IntVar(&port, "p", portDefault, "API port")
+	flag.Parse()
+
 	services, err := internal.NewServices()
 	if err != nil {
 		panic(err)
@@ -30,6 +42,6 @@ func main() {
 
 	router := internal.NewRouter(services)
 
-	log.Println("Starting server...")
-	_ = http.ListenAndServe(":3000", router) // TODO use an environment variable
+	log.Printf("Starting server on port %d...", port)
+	_ = http.ListenAndServe(fmt.Sprintf(":%d", port), router)
 }

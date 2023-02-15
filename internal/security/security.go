@@ -2,9 +2,14 @@ package security
 
 import (
 	"golang.org/x/crypto/bcrypt"
+	"os"
 )
 
-const pepper = "secret-random.string" // TODO move to env variables
+var pepper string
+
+func init() {
+	pepper = os.Getenv("HASH_PEPPER")
+}
 
 // GeneratePasswordHash generates a password hash from a peppered password
 func GeneratePasswordHash(password string) (string, error) {

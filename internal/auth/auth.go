@@ -4,14 +4,19 @@ import (
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
 
-const expirationTime = 30 * time.Minute
 const JWTClaimsKey = "jwtClaims"
+const expirationTime = 30 * time.Minute
 
-var jwtSecret = []byte("df83hjfr8sj39gtyuhw93fc598mn7") // TODO move to env variables
+var jwtSecret []byte
+
+func init() {
+	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
+}
 
 // TokenInfo represents a token and its expiration time
 type TokenInfo struct {

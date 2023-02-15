@@ -9,10 +9,41 @@ services:
       MYSQL_PASSWORD: film
       MYSQL_DATABASE: films
       MYSQL_ROOT_PASSWORD: 1234
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 8s
+      timeout: 10s
+      retries: 3
     ports:
       - "3306:3306"
+    networks:
+      - api-network
     volumes:
       - db:/var/lib/mysql
+
+  films-api:
+    image: films-api
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: film
+      DB_PASSWORD: film
+      DB_NAME: films
+      DB_PORT: 3306
+      JWT_SECRET: df83hjfr8sj39gtyuhw93fc598mn7
+      HASH_PEPPER: secret-random.string
+    networks:
+      - api-network
+
 volumes:
   db:
     driver: local
+
+networks:
+  api-network:
+    driver: bridge

@@ -12,6 +12,7 @@ type Film struct {
 	Genre       string `gorm:"not_null"`
 	Synopsis    string `gorm:"not_null"`
 	UserID      uint   `gorm:"not_null"`
+	User        User   // with this, gorm is able to understand the dependency between films and users
 	// TODO Cast
 }
 
