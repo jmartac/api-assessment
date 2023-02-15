@@ -11,7 +11,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      interval: 8s
+      interval: 15s
       timeout: 10s
       retries: 3
     ports:
