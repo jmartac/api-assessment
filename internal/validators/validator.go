@@ -32,7 +32,7 @@ func (v *Validator) Validate(i interface{}) error {
 }
 
 // usernameValidator is used to validate the username field of a user request
-// The username must start with a letter, contain only letters and numbers and be between 3 and 30 characters long
+// The username must start with a letter, it can only contain letters and numbers and be between 3 and 30 characters long
 func usernameValidator(fl validator.FieldLevel) bool {
 	username := fl.Field().String()
 	reg := re.MustCompile(`^[a-zA-Z][a-zA-Z0-9]{2,29}$`)
@@ -40,7 +40,7 @@ func usernameValidator(fl validator.FieldLevel) bool {
 }
 
 // passwordValidator is used to validate the password field of a user request
-// The password must start with a letter, contain only letters and numbers and be between 8 and 128 characters long
+// The password must start with a letter, it can only contain letters and numbers and be between 8 and 128 characters long
 func passwordValidator(fl validator.FieldLevel) bool {
 	password := fl.Field().String()
 	reg := re.MustCompile(`^[a-zA-Z][a-zA-Z0-9]{7,127}$`)

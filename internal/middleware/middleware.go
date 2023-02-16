@@ -2,7 +2,9 @@ package middleware
 
 import (
 	"api-assessment/internal/auth"
+	apiErrors "api-assessment/internal/errors"
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 	"strings"
@@ -30,7 +32,14 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		// check auth header
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer") {
-			http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+			// write error response
+			w.WriteHeader(apiErrors.ErrInvalidToken.StatusErrCode)
+			err := json.NewEncoder(w).Encode(apiErrors.ErrInvalidToken.ToResponse())
+
+			if err != nil {
+				log.Println(err)
+				http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+			}
 			return
 		}
 		token := strings.TrimPrefix(authHeader, "Bearer ")
@@ -38,7 +47,20 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		// check if token is valid
 		jwtClaim, err := auth.ValidateToken(token)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			// write error response
+			switch {
+			case strings.Contains(err.Error(), "token is expired by"):
+				w.WriteHeader(apiErrors.ErrTokenExpired.StatusErrCode)
+				err = json.NewEncoder(w).Encode(apiErrors.ErrTokenExpired.ToResponse())
+			default:
+				w.WriteHeader(apiErrors.ErrInvalidToken.StatusErrCode)
+				err = json.NewEncoder(w).Encode(apiErrors.ErrInvalidToken.ToResponse())
+			}
+
+			if err != nil {
+				log.Println(err)
+				http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+			}
 			return
 		}
 

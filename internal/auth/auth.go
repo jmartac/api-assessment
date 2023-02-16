@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"errors"
+	"api-assessment/internal/errors"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 	"os"
@@ -64,10 +64,10 @@ func ValidateToken(tokenString string) (*JWTClaim, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !token.Valid {
-		return nil, errors.New("invalid token")
+	if token.Valid {
+		return token.Claims.(*JWTClaim), nil
 	}
-	return token.Claims.(*JWTClaim), nil
+	return nil, apiErrors.ErrInvalidToken
 }
 
 // GetUserIDFromRequest returns the ID of the user from the request context
@@ -75,7 +75,7 @@ func GetUserIDFromRequest(r *http.Request) (uint, error) {
 	ctxValue := r.Context().Value(JWTClaimsKey)
 	jwtClaim, ok := ctxValue.(*JWTClaim)
 	if !ok {
-		return 0, errors.New("no claims found in request context")
+		return 0, apiErrors.ErrAuthFailed
 	}
 
 	id, err := strconv.ParseUint(jwtClaim.Subject, 10, 32)
@@ -88,8 +88,7 @@ func GetUserIDFromRequest(r *http.Request) (uint, error) {
 // keyFunc checks the signing method and returns the secret key
 func keyFunc(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-		err := errors.New("signing method family different from HMAC-SHA")
-		return nil, err
+		return nil, apiErrors.ErrInvalidToken
 	}
 	return jwtSecret, nil
 }
