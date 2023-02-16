@@ -36,15 +36,6 @@ func (s *Services) Close() error {
 	return sqlDB.Close()
 }
 
-// DestructiveReset drops models tables and rebuilds them
-func (s *Services) DestructiveReset() error {
-	err := s.db.Migrator().DropTable(&models.Film{}, &models.User{})
-	if err != nil {
-		return err
-	}
-	return s.AutoMigrate()
-}
-
 // AutoMigrate will attempt to migrate all models tables
 func (s *Services) AutoMigrate() error {
 	return s.db.Migrator().AutoMigrate(&models.Film{}, &models.User{})
