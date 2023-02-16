@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"api-assessment/internal/auth"
-	apiErrors "api-assessment/internal/errors"
+	"api-assessment/internal/errors"
 	"context"
 	"encoding/json"
 	"log"
@@ -32,14 +32,7 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		// check auth header
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer") {
-			// write error response
-			w.WriteHeader(apiErrors.ErrInvalidToken.StatusErrCode)
-			err := json.NewEncoder(w).Encode(apiErrors.ErrInvalidToken.ToResponse())
-
-			if err != nil {
-				log.Println(err)
-				http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-			}
+			handleError(w, apiErrors.ErrInvalidToken)
 			return
 		}
 		token := strings.TrimPrefix(authHeader, "Bearer ")
@@ -47,20 +40,14 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		// check if token is valid
 		jwtClaim, err := auth.ValidateToken(token)
 		if err != nil {
-			// write error response
-			switch {
-			case strings.Contains(err.Error(), "token is expired by"):
-				w.WriteHeader(apiErrors.ErrTokenExpired.StatusErrCode)
-				err = json.NewEncoder(w).Encode(apiErrors.ErrTokenExpired.ToResponse())
-			default:
-				w.WriteHeader(apiErrors.ErrInvalidToken.StatusErrCode)
-				err = json.NewEncoder(w).Encode(apiErrors.ErrInvalidToken.ToResponse())
+			var apiError apiErrors.ApiError
+			if strings.Contains(err.Error(), "token is expired by") {
+				apiError = apiErrors.ErrTokenExpired
+			} else {
+				apiError = apiErrors.ErrInvalidToken
 			}
 
-			if err != nil {
-				log.Println(err)
-				http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-			}
+			handleError(w, apiError)
 			return
 		}
 
@@ -69,5 +56,15 @@ func Authenticate(handlerFunc http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(ctxWithClaims)
 
 		handlerFunc.ServeHTTP(w, r)
+	}
+}
+
+func handleError(w http.ResponseWriter, apiError apiErrors.ApiError) {
+	w.WriteHeader(apiError.StatusErrCode)
+	err := json.NewEncoder(w).Encode(apiError.ToResponse())
+
+	if err != nil {
+		log.Println(err)
+		http.Error(w, apiErrors.ErrInternal.Error(), apiErrors.ErrInternal.StatusErrCode)
 	}
 }

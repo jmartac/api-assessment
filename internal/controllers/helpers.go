@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	apiErrors "api-assessment/internal/errors"
+	"api-assessment/internal/errors"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"

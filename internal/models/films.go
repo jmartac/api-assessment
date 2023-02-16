@@ -7,13 +7,13 @@ import (
 type Film struct {
 	gorm.Model
 	Title       string `gorm:"not_null;unique"`
-	Director    string `gorm:"not_null"`
-	ReleaseDate string `gorm:"not_null"`
-	Genre       string `gorm:"not_null"`
-	Synopsis    string `gorm:"not_null"`
-	Cast        string `gorm:"not_null"`
-	UserID      uint   `gorm:"not_null"`
-	User        User   // with this, gorm is able to understand the dependency between films and users
+	Director    string
+	ReleaseDate string
+	Genre       string
+	Synopsis    string
+	Cast        string
+	UserID      uint
+	User        User // with this, gorm is able to understand the dependency between films and users
 }
 
 // MergeData merges non-empty fields from the given data into the film

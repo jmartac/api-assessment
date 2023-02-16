@@ -56,10 +56,16 @@ func (fc *FilmsController) FindByID(w http.ResponseWriter, r *http.Request) {
 // Create is used to create a new film and return the details
 // POST /films
 func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
-	var request models.FilmRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
+	var filmRequest models.FilmRequest
+	err := json.NewDecoder(r.Body).Decode(&filmRequest)
 	if err != nil {
 		fc.handleError(w, err, apiErrors.ErrBadRequest)
+		return
+	}
+
+	// validate that film title is not empty
+	if strings.TrimSpace(filmRequest.Title) == "" {
+		fc.handleError(w, nil, apiErrors.ErrFilmTitleRequired)
 		return
 	}
 
@@ -70,12 +76,12 @@ func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	film := models.Film{
-		Title:       request.Title,
-		Director:    request.Director,
-		ReleaseDate: request.ReleaseDate,
-		Genre:       request.Genre,
-		Synopsis:    request.Synopsis,
-		Cast:        request.Cast,
+		Title:       filmRequest.Title,
+		Director:    filmRequest.Director,
+		ReleaseDate: filmRequest.ReleaseDate,
+		Genre:       filmRequest.Genre,
+		Synopsis:    filmRequest.Synopsis,
+		Cast:        filmRequest.Cast,
 		UserID:      userID,
 	}
 	err = fc.fs.Create(&film)
@@ -115,15 +121,15 @@ func (fc *FilmsController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Decode new data
-	var request models.FilmRequest
-	err = json.NewDecoder(r.Body).Decode(&request)
+	var filmRequest models.FilmRequest
+	err = json.NewDecoder(r.Body).Decode(&filmRequest)
 	if err != nil {
 		fc.handleError(w, err, apiErrors.ErrBadRequest)
 		return
 	}
 
 	// merge new data with existing film data
-	film.MergeData(&request)
+	film.MergeData(&filmRequest)
 
 	err = fc.fs.Update(film)
 	if err != nil {
