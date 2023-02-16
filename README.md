@@ -37,5 +37,5 @@ the JWT token to access the other endpoints (only the `/login` and `/register` e
 be sent in the `Authorization` header, with the `Bearer` prefix, so I recommend setting it in the collection
 Authorization tab.
 
-Also, remember to use the PRO environment, as this is the one that uses the `localhost:8080` URL (DEV
-uses `localhost:3000`).
+A collection variable `URL` is used on the endpoints, it should be set to `localhost:PORT` (in this
+case, `localhost:8080`).
