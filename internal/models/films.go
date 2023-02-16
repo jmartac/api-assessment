@@ -11,9 +11,9 @@ type Film struct {
 	ReleaseDate string `gorm:"not_null"`
 	Genre       string `gorm:"not_null"`
 	Synopsis    string `gorm:"not_null"`
+	Cast        string `gorm:"not_null"`
 	UserID      uint   `gorm:"not_null"`
 	User        User   // with this, gorm is able to understand the dependency between films and users
-	// TODO Cast
 }
 
 // MergeData merges non-empty fields from the given data into the film
@@ -33,6 +33,9 @@ func (f *Film) MergeData(data *FilmRequest) {
 	if data.Synopsis != "" {
 		f.Synopsis = data.Synopsis
 	}
+	if data.Cast != "" {
+		f.Cast = data.Cast
+	}
 }
 
 // ToResponse converts a Film model into a FilmResponse
@@ -44,6 +47,7 @@ func (f *Film) ToResponse() FilmResponse {
 		ReleaseDate: f.ReleaseDate,
 		Genre:       f.Genre,
 		Synopsis:    f.Synopsis,
+		Cast:        f.Cast,
 		UserID:      f.UserID,
 	}
 }
@@ -65,6 +69,7 @@ type FilmRequest struct {
 	ReleaseDate string `json:"release_date"`
 	Genre       string `json:"genre"`
 	Synopsis    string `json:"synopsis"`
+	Cast        string `json:"cast"`
 }
 
 type FilmResponse struct {
@@ -74,5 +79,6 @@ type FilmResponse struct {
 	ReleaseDate string `json:"release_date"`
 	Genre       string `json:"genre"`
 	Synopsis    string `json:"synopsis"`
+	Cast        string `json:"cast"`
 	UserID      uint   `json:"user_id"`
 }

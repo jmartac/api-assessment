@@ -75,6 +75,7 @@ func (fc *FilmsController) Create(w http.ResponseWriter, r *http.Request) {
 		ReleaseDate: request.ReleaseDate,
 		Genre:       request.Genre,
 		Synopsis:    request.Synopsis,
+		Cast:        request.Cast,
 		UserID:      userID,
 	}
 	err = fc.fs.Create(&film)
