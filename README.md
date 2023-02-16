@@ -28,3 +28,11 @@ Now, at the project root:
    to be ready.
 3. (Optional) Run `mysql --protocol=TCP -u film -pfilm -D films < seed.sql` to seed the database with some data.
 
+## Endpoints
+
+I have added a Postman collection with the endpoints and some examples.
+
+You can log in with an existing user (endpoint `/login existing`) or create a new one to log in with it, and then use
+the JWT token to access the other endpoints (only the `/login` and `/register` endpoints are public). The JWT token must
+be sent in the `Authorization` header, with the `Bearer` prefix, so I recommend setting it in the collection
+Authorization tab. 

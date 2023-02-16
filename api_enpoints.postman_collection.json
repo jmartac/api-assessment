@@ -1,0 +1,318 @@
+{
+  "info": {
+    "_postman_id": "48eac95f-83af-4a83-92e2-f80d3a1417a5",
+    "name": "API assessment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "24750889"
+  },
+  "item": [
+    {
+      "name": "login existingUser",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"existingUser\",\n    \"password\": \"megaP4ssword\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/login",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/films",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films?title=godfather&genre=drama",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/films?title=godfather&genre=drama",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films"
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "godfather"
+            },
+            {
+              "key": "genre",
+              "value": "drama"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films?title=godfather%3A%20Part%20II",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/films?title=godfather%3A%20Part%20II",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films"
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "godfather%3A%20Part%20II"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films?title=godfather&release_date=1974-12-20",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/films?title=godfather&release_date=1974-12-20",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films"
+          ],
+          "query": [
+            {
+              "key": "title",
+              "value": "godfather"
+            },
+            {
+              "key": "release_date",
+              "value": "1974-12-20"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films/1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{URL}}/films/1",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n   \"title\": \"HARRY POTTER\",\n   \"director\": \"J.K. Rowling\",\n   \"genre\": \"Fantasy\",\n   \"release_date\": \"2001-11-16\",\n   \"synopsis\": \"A lot of Fantasy\",\n   \"cast\": \"Voldemort\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/films",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films/8/update",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n   \"title\": \"HARRY POTTER 2\",\n   \"release_date\": \"2002-11-16\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/films/8/update",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films",
+            "8",
+            "update"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "films/1/delete",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/films/1/delete",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "films",
+            "1",
+            "delete"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"newUser\",\n    \"password\": \"megaSuperP4ssword\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/register",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"newUser\",\n    \"password\": \"megaSuperP4ssword\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/login",
+          "host": [
+            "{{URL}}"
+          ],
+          "path": [
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
