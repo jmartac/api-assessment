@@ -52,7 +52,7 @@ type Films []Film
 
 // ToResponse converts a slice of Film into a slice of FilmResponse
 func (f Films) ToResponse() []FilmResponse {
-	var films []FilmResponse
+	films := make([]FilmResponse, 0)
 	for _, film := range f {
 		films = append(films, film.ToResponse())
 	}
